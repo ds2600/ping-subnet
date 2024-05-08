@@ -1,0 +1,28 @@
+name: Build for Linux on Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential
+
+    - name: Compile program
+      run: gcc -o ping_subnet ping_subnet.c
+
+    - name: Upload executable as asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./ping_subnet
+        asset_name: ping_subnet
+        asset_content_type: application/octet-stream
