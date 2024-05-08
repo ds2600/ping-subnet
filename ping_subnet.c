@@ -67,6 +67,8 @@ int main() {
     inet_pton(AF_INET, ip_address, &ip_addr);
     mask = atoi(subnet_mask);
 
+    unsigned long total_ips = (1UL << (32 - mask)) - 2;
+    printf ("IPs to Check: %lu\n", total_ips);
     // Calculate the network address
     unsigned long mask_binary = ~((1 << (32 - mask)) - 1);
     net_addr.s_addr = ip_addr.s_addr & htonl(mask_binary);
@@ -85,6 +87,9 @@ int main() {
 
     printf("Starting IP: %s\nEnding IP: %s\n", net_str, broad_str);  
 
+    int successful_pings = 0;
+    int unsuccessful_pings = 0;
+
     for (unsigned long addr = ntohl(net_addr.s_addr) + 1; addr < ntohl(broad_addr.s_addr) && keep_running; addr++) {
         struct in_addr current_addr;
         current_addr.s_addr = htonl(addr);
@@ -97,9 +102,17 @@ int main() {
         printf("\rRuntime: %d seconds  Current IP: %s    ", elapsed_time, ip_str);
         fflush(stdout);
 
-        ping_ip(ip_str, fp);
+        int result = ping_ip(ip_str, fp);
+        if (result > 0) {
+            successful_pings++;
+        } else {
+            unsuccessful_pings++;
+        }
     }
 
     fclose(fp);
+    
+    printf("\nFinished\nResponders: %d\nNonresponders: %d\n", successful_pings, unsuccessful_pings);
+
     return 0;
 }
