@@ -10,7 +10,7 @@ int ping_ip(const char *ip, FILE *fp) {
     int success_count = 0;
 
     // Format the ping command to send one packet
-    snprintf(command, sizeof(command), "ping -c 1 %s > /dev/null 2>&1", ip);
+    snprintf(command, sizeof(command), "ping -c 1 -W 0.5 %s > /dev/null 2>&1", ip);
 
     // Execute the ping command and check the result
     if (system(command) == 0) { // system() returns 0 if successful
@@ -76,6 +76,8 @@ int main() {
     
     time_t start_time, current_time;
     time(&start_time);
+
+    printf("Starting IP: %s\nEnding IP: %s\n", net_addr.s_addr, broad_addr.s_addr);  
 
     for (unsigned long addr = ntohl(net_addr.s_addr) + 1; addr < ntohl(broad_addr.s_addr) && keep_running; addr++) {
         struct in_addr current_addr;
