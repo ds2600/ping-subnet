@@ -77,7 +77,13 @@ int main() {
     time_t start_time, current_time;
     time(&start_time);
 
-    printf("Starting IP: %s\nEnding IP: %s\n", net_addr.s_addr, broad_addr.s_addr);  
+    char net_str[INET_ADDRSTRLEN];
+    char broad_str[INET_ADDRSTRLEN];
+    
+    inet_ntop(AF_INET, &net_addr, net_str, INET_ADDRSTRLEN);
+    inet_ntop(AF_INET, &broad_addr, broad_str, INET_ADDRSTRLEN);
+
+    printf("Starting IP: %s\nEnding IP: %s\n", net_str, broad_str);  
 
     for (unsigned long addr = ntohl(net_addr.s_addr) + 1; addr < ntohl(broad_addr.s_addr) && keep_running; addr++) {
         struct in_addr current_addr;
@@ -93,10 +99,6 @@ int main() {
 
         ping_ip(ip_str, fp);
     }
-
-//    char net_str[INET_ADDRSTRLEN], broad_str[INET_ADDRSTRLEN];
-//    inet_ntop(AF_INET, &net_addr, net_str, INET_ADDRSTRLEN);
-//    inet_ntop(AF_INET, &broad_addr, broad_str, INET_ADDRSTRLEN);
 
     fclose(fp);
     return 0;
