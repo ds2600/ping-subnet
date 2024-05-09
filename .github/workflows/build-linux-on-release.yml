@@ -15,7 +15,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y build-essential
 
     - name: Compile program
-      run: gcc -o ping_subnet ping_subnet.c
+      run: gcc -o linux_ping_subnet ping_subnet.c
 
     - name: Upload executable as asset
       uses: actions/upload-release-asset@v1
@@ -23,6 +23,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./ping_subnet
-        asset_name: ping_subnet
+        asset_path: ./linux_ping_subnet
+        asset_name: linux_ping_subnet
         asset_content_type: application/octet-stream
